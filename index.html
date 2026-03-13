@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NYC Streets — Open World Brawler</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- BOOT SCREEN -->
+  <div id="boot-screen">
+    <div class="boot-logo">
+      <div class="boot-title">NYC STREETS</div>
+      <div class="boot-sub">AN OPEN WORLD BRAWLER</div>
+      <div class="boot-district">LIBERTY CITY · NEW YORK</div>
+    </div>
+    <button class="boot-btn" id="boot-btn">PRESS START</button>
+    <div class="boot-warning">Contains violence. For entertainment purposes only.</div>
+  </div>
+
+  <!-- MAIN GAME -->
+  <div id="game-wrap" style="display:none">
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- HUD -->
+    <div id="hud">
+      <!-- Top Left: Health + Armor + Stamina -->
+      <div id="hud-stats">
+        <div class="hud-bar-row">
+          <span class="hud-icon">♥</span>
+          <div class="hud-bar-bg"><div id="hp-bar" class="hud-bar hp-color"></div></div>
+          <span id="hp-val" class="hud-bar-num">100</span>
+        </div>
+        <div class="hud-bar-row">
+          <span class="hud-icon" style="color:#88aaff">🛡</span>
+          <div class="hud-bar-bg"><div id="armor-bar" class="hud-bar armor-color"></div></div>
+          <span id="armor-val" class="hud-bar-num">0</span>
+        </div>
+        <div class="hud-bar-row">
+          <span class="hud-icon" style="color:#ffdd44">⚡</span>
+          <div class="hud-bar-bg"><div id="stamina-bar" class="hud-bar stamina-color"></div></div>
+        </div>
+        <div id="cash-display">$ <span id="cash-val">0</span></div>
+      </div>
+
+      <!-- Top Center: Minimap -->
+      <div id="minimap-wrap">
+        <canvas id="minimap"></canvas>
+        <div id="minimap-label">LOWER MANHATTAN</div>
+      </div>
+
+      <!-- Top Right: Wanted + Score -->
+      <div id="hud-right">
+        <div id="wanted-label">WANTED</div>
+        <div id="wanted-stars">
+          <span class="star" id="star1">★</span>
+          <span class="star" id="star2">★</span>
+          <span class="star" id="star3">★</span>
+          <span class="star" id="star4">★</span>
+          <span class="star" id="star5">★</span>
+        </div>
+        <div id="score-label">SCORE</div>
+        <div id="score-val">0</div>
+      </div>
+
+      <!-- Bottom Left: Quest Panel -->
+      <div id="quest-panel">
+        <div id="quest-title">▶ CURRENT MISSION</div>
+        <div id="quest-name">—</div>
+        <div id="quest-obj">Walk to a mission marker to begin.</div>
+        <div id="quest-progress-wrap" style="display:none">
+          <div id="quest-progress-bar"><div id="quest-progress-fill"></div></div>
+        </div>
+      </div>
+
+      <!-- Bottom Right: Controls -->
+      <div id="controls-hud">
+        <div class="ctrl-row"><kbd>WASD</kbd> Move</div>
+        <div class="ctrl-row"><kbd>J</kbd> Punch &nbsp;<kbd>K</kbd> Kick</div>
+        <div class="ctrl-row"><kbd>L</kbd> Special &nbsp;<kbd>E</kbd> Interact</div>
+        <div class="ctrl-row"><kbd>R</kbd> Roll/Dodge</div>
+      </div>
+    </div>
+
+    <!-- Notification Banner -->
+    <div id="notif-banner"></div>
+
+    <!-- Mission Complete Overlay -->
+    <div id="mission-complete" style="display:none">
+      <div class="mc-inner">
+        <div class="mc-title">MISSION COMPLETE</div>
+        <div class="mc-name" id="mc-name"></div>
+        <div class="mc-reward" id="mc-reward"></div>
+        <div class="mc-score" id="mc-score-final"></div>
+      </div>
+    </div>
+
+    <!-- Game Over -->
+    <div id="gameover-screen" style="display:none">
+      <div class="go-inner">
+        <div class="go-title">WASTED</div>
+        <div class="go-sub">You were taken down on the streets of NYC</div>
+        <div class="go-score">Score: <span id="go-score-val">0</span></div>
+        <button class="go-btn" onclick="Game.respawn()">RESPAWN</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/map.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/quests.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
