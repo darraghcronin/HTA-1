@@ -1,0 +1,351 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;600;700&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --col-bg: #0a0c0f;
+  --col-hud: rgba(0,0,0,0.78);
+  --col-red: #e82020;
+  --col-gold: #f5c518;
+  --col-green: #2ecc71;
+  --col-blue: #3498db;
+  --col-text: #e8e0d0;
+  --col-dim: #888;
+  --col-hp: #e82020;
+  --col-armor: #5588ff;
+  --col-stamina: #f5c518;
+  --hud-font: 'Bebas Neue', sans-serif;
+  --body-font: 'Oswald', sans-serif;
+  --mono-font: 'Share Tech Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--col-bg);
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  font-family: var(--body-font);
+  color: var(--col-text);
+  cursor: crosshair;
+}
+
+/* ─── BOOT SCREEN ─────────────────────────────────── */
+#boot-screen {
+  position: fixed; inset: 0;
+  background: #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 100;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px);
+}
+
+.boot-logo {
+  text-align: center;
+  animation: bootPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes bootPulse {
+  from { text-shadow: 0 0 40px rgba(232,32,32,0.4); }
+  to   { text-shadow: 0 0 80px rgba(232,32,32,0.8), 0 0 120px rgba(232,32,32,0.3); }
+}
+
+.boot-title {
+  font-family: var(--hud-font);
+  font-size: clamp(60px, 12vw, 120px);
+  color: var(--col-red);
+  letter-spacing: 10px;
+  line-height: 1;
+}
+
+.boot-sub {
+  font-family: var(--hud-font);
+  font-size: clamp(16px, 3vw, 26px);
+  color: #aaa;
+  letter-spacing: 8px;
+  margin-top: 4px;
+}
+
+.boot-district {
+  font-family: var(--mono-font);
+  font-size: 13px;
+  color: #555;
+  letter-spacing: 4px;
+  margin-top: 12px;
+}
+
+.boot-btn {
+  margin-top: 60px;
+  font-family: var(--hud-font);
+  font-size: 28px;
+  letter-spacing: 6px;
+  padding: 14px 60px;
+  background: transparent;
+  color: var(--col-gold);
+  border: 2px solid var(--col-gold);
+  cursor: pointer;
+  transition: all 0.2s;
+  clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  animation: btnBlink 1.2s step-end infinite;
+}
+
+@keyframes btnBlink { 50% { opacity: 0.4; } }
+
+.boot-btn:hover {
+  background: var(--col-gold);
+  color: #000;
+  animation: none;
+  transform: scale(1.04);
+}
+
+.boot-warning {
+  position: absolute; bottom: 20px;
+  font-size: 11px; color: #333; letter-spacing: 2px;
+}
+
+/* ─── GAME CANVAS ─────────────────────────────────── */
+#game-wrap { position: relative; width: 100vw; height: 100vh; }
+
+#gameCanvas {
+  display: block;
+  image-rendering: pixelated;
+  background: #1a1a1a;
+}
+
+/* ─── HUD ─────────────────────────────────────────── */
+#hud {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+
+/* Stats (top-left) */
+#hud-stats {
+  position: absolute; top: 14px; left: 14px;
+  background: var(--col-hud);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-left: 3px solid var(--col-red);
+  padding: 10px 14px;
+  min-width: 200px;
+  backdrop-filter: blur(4px);
+}
+
+.hud-bar-row {
+  display: flex; align-items: center; gap: 7px;
+  margin-bottom: 5px;
+}
+.hud-icon { font-size: 12px; width: 16px; text-align: center; color: var(--col-red); }
+.hud-bar-bg {
+  flex: 1; height: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 1px; overflow: hidden;
+}
+.hud-bar {
+  height: 100%; width: 100%;
+  transition: width 0.15s;
+  border-radius: 1px;
+}
+.hp-color     { background: linear-gradient(90deg, #aa0000, var(--col-red)); }
+.armor-color  { background: linear-gradient(90deg, #224499, var(--col-blue)); }
+.stamina-color{ background: linear-gradient(90deg, #aa8800, var(--col-gold)); }
+
+.hud-bar-num {
+  font-family: var(--mono-font); font-size: 11px; color: #ccc; min-width: 28px;
+}
+
+#cash-display {
+  font-family: var(--hud-font);
+  font-size: 22px;
+  color: var(--col-green);
+  margin-top: 4px;
+  letter-spacing: 2px;
+}
+
+/* Minimap (top-center) */
+#minimap-wrap {
+  position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+  text-align: center;
+}
+#minimap {
+  width: 130px; height: 130px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 50%;
+  overflow: hidden;
+  display: block;
+  background: #111;
+}
+#minimap-label {
+  font-family: var(--mono-font); font-size: 10px; color: #666;
+  letter-spacing: 2px; margin-top: 4px;
+}
+
+/* Wanted + Score (top-right) */
+#hud-right {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--col-hud);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-right: 3px solid var(--col-gold);
+  padding: 10px 14px;
+  text-align: right;
+  backdrop-filter: blur(4px);
+}
+#wanted-label, #score-label {
+  font-family: var(--mono-font); font-size: 10px; color: #666; letter-spacing: 3px;
+}
+#wanted-stars { font-size: 20px; margin: 2px 0 8px; }
+.star { color: #333; transition: color 0.2s, text-shadow 0.2s; }
+.star.active { color: var(--col-gold); text-shadow: 0 0 8px var(--col-gold); }
+.star.hot { color: var(--col-red); text-shadow: 0 0 12px var(--col-red); animation: starPulse 0.5s alternate infinite; }
+@keyframes starPulse { to { text-shadow: 0 0 24px var(--col-red); } }
+#score-val {
+  font-family: var(--hud-font); font-size: 30px; color: #fff; letter-spacing: 2px;
+}
+
+/* Quest Panel (bottom-left) */
+#quest-panel {
+  position: absolute; bottom: 14px; left: 14px;
+  background: var(--col-hud);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-left: 3px solid var(--col-gold);
+  padding: 10px 14px;
+  max-width: 300px;
+  backdrop-filter: blur(4px);
+}
+#quest-title {
+  font-family: var(--mono-font); font-size: 10px; color: var(--col-gold); letter-spacing: 3px;
+  margin-bottom: 4px;
+}
+#quest-name {
+  font-family: var(--hud-font); font-size: 20px; color: #fff; letter-spacing: 1px;
+}
+#quest-obj {
+  font-size: 13px; color: #aaa; margin-top: 4px; line-height: 1.4;
+}
+#quest-progress-wrap { margin-top: 8px; }
+#quest-progress-bar {
+  height: 6px; background: rgba(255,255,255,0.1); border-radius: 1px; overflow: hidden;
+}
+#quest-progress-fill {
+  height: 100%; width: 0%; background: var(--col-gold);
+  transition: width 0.3s; border-radius: 1px;
+}
+
+/* Controls (bottom-right) */
+#controls-hud {
+  position: absolute; bottom: 14px; right: 14px;
+  background: var(--col-hud);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 14px;
+  font-size: 12px; color: #888;
+  backdrop-filter: blur(4px);
+}
+.ctrl-row { margin-bottom: 3px; }
+kbd {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: var(--mono-font); font-size: 11px; color: #ccc;
+}
+
+/* ─── NOTIFICATION ─────────────────────────────────── */
+#notif-banner {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--hud-font);
+  font-size: clamp(18px, 3vw, 28px);
+  color: var(--col-gold);
+  text-align: center;
+  letter-spacing: 4px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.9);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 50;
+  max-width: 80vw;
+  padding: 0 20px;
+}
+#notif-banner.show { opacity: 1; }
+
+/* ─── MISSION COMPLETE ─────────────────────────────── */
+#mission-complete {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 60;
+  animation: mcFadeIn 0.5s;
+}
+@keyframes mcFadeIn { from { opacity: 0; } }
+.mc-inner { text-align: center; }
+.mc-title {
+  font-family: var(--hud-font);
+  font-size: clamp(50px, 10vw, 90px);
+  color: var(--col-gold);
+  letter-spacing: 8px;
+  text-shadow: 0 0 60px rgba(245,197,24,0.6);
+  animation: mcPulse 0.8s ease-out;
+}
+@keyframes mcPulse {
+  0%   { transform: scale(2); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.mc-name { font-family: var(--hud-font); font-size: 28px; color: #fff; margin-top: 8px; letter-spacing: 4px; }
+.mc-reward { font-family: var(--hud-font); font-size: 36px; color: var(--col-green); margin-top: 12px; }
+.mc-score { font-size: 14px; color: #888; margin-top: 8px; letter-spacing: 2px; }
+
+/* ─── GAME OVER ─────────────────────────────────────── */
+#gameover-screen {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.9);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 70;
+}
+.go-inner { text-align: center; }
+.go-title {
+  font-family: var(--hud-font);
+  font-size: clamp(70px, 15vw, 140px);
+  color: var(--col-red);
+  letter-spacing: 10px;
+  text-shadow: 0 0 80px rgba(232,32,32,0.7);
+  animation: goShake 0.4s ease-out;
+}
+@keyframes goShake {
+  0%,100% { transform: translateX(0); }
+  20%,60% { transform: translateX(-8px); }
+  40%,80% { transform: translateX(8px); }
+}
+.go-sub { color: #666; font-size: 16px; letter-spacing: 3px; margin-top: 8px; }
+.go-score { font-family: var(--hud-font); font-size: 28px; color: #aaa; margin-top: 16px; }
+.go-btn {
+  margin-top: 30px;
+  font-family: var(--hud-font); font-size: 26px; letter-spacing: 4px;
+  padding: 12px 50px;
+  background: var(--col-red); color: #fff;
+  border: none; cursor: pointer;
+  clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  transition: transform 0.1s, background 0.1s;
+  pointer-events: all;
+}
+.go-btn:hover { background: #ff5555; transform: scale(1.05); }
+
+/* ─── DIALOG BOX ────────────────────────────────────── */
+#dialog-box {
+  position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: rgba(0,0,0,0.9);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-top: 3px solid var(--col-gold);
+  padding: 16px 24px;
+  max-width: 500px; min-width: 320px;
+  display: none; z-index: 55;
+  pointer-events: all;
+}
+#dialog-speaker {
+  font-family: var(--hud-font); font-size: 18px; color: var(--col-gold); letter-spacing: 3px;
+  margin-bottom: 6px;
+}
+#dialog-text {
+  font-size: 14px; color: #ccc; line-height: 1.6;
+}
+#dialog-continue {
+  margin-top: 10px;
+  font-family: var(--mono-font); font-size: 11px; color: #666;
+  animation: btnBlink 1s step-end infinite;
+}
